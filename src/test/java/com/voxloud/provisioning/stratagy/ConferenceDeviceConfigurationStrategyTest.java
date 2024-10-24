@@ -1,7 +1,7 @@
 package com.voxloud.provisioning.stratagy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voxloud.provisioning.entity.Device;
+import com.voxloud.provisioning.exception.JsonParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,10 +26,7 @@ class ConferenceDeviceConfigurationStrategyTest {
     private static final String PASSWORD = "pass";
     private static final String OVERRIDE_FRAGMENT = "{\"domain\":\"override.com\",\"port\":\"9090\"}";
     private static final String INVALID_FRAGMENT = "invalid json";
-    private static final String OVERRIDE_PORT = "9090";
-    private static final String OVERRIDE_DOMEN = "override.com";
     private Device device;
-
 
     @BeforeEach
     void setUp() {
@@ -42,7 +37,6 @@ class ConferenceDeviceConfigurationStrategyTest {
         device = new Device();
         device.setUsername(USER_NAME);
         device.setPassword(PASSWORD);
-
     }
 
     @Test
@@ -52,14 +46,8 @@ class ConferenceDeviceConfigurationStrategyTest {
 
         String result = strategy.generateConfiguration(device);
 
-        Map<String, Object> expectedConfig = new HashMap<>();
-        expectedConfig.put("username", USER_NAME);
-        expectedConfig.put("password", PASSWORD);
-        expectedConfig.put("domain", DOMAIN);
-        expectedConfig.put("port", String.valueOf(PORT));
-        expectedConfig.put("codecs", new String[]{"G711", "G729"});
+        String expectedJson = "{\"username\":\"user\",\"password\":\"pass\",\"domain\":\"sip.voxloud.com\",\"port\":\"5060\",\"codecs\":[\"G711\",\"G729\"]}";
 
-        String expectedJson = new ObjectMapper().writeValueAsString(expectedConfig);
         assertEquals(expectedJson, result);
     }
 
@@ -69,15 +57,7 @@ class ConferenceDeviceConfigurationStrategyTest {
         device.setOverrideFragment(OVERRIDE_FRAGMENT);
 
         String result = strategy.generateConfiguration(device);
-
-        Map<String, Object> expectedConfig = new HashMap<>();
-        expectedConfig.put("username", USER_NAME);
-        expectedConfig.put("password", PASSWORD);
-        expectedConfig.put("domain", OVERRIDE_DOMEN);
-        expectedConfig.put("port", OVERRIDE_PORT);
-        expectedConfig.put("codecs", new String[]{"G711", "G729"});
-
-        String expectedJson = new ObjectMapper().writeValueAsString(expectedConfig);
+        String expectedJson = "{\"username\":\"user\",\"password\":\"pass\",\"domain\":\"override.com\",\"port\":\"9090\",\"codecs\":[\"G711\",\"G729\"]}";
         assertEquals(expectedJson, result);
     }
 
@@ -86,7 +66,6 @@ class ConferenceDeviceConfigurationStrategyTest {
     void generateConfiguration_WithInvalidOverrideFragment_ThrowsException() {
         device.setOverrideFragment(INVALID_FRAGMENT);
 
-        assertThrows(RuntimeException.class, () -> strategy.generateConfiguration(device));
+        assertThrows(JsonParseException.class, () -> strategy.generateConfiguration(device));
     }
-
 }

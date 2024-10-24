@@ -23,7 +23,7 @@ class DeskDeviceConfigurationStrategyTest {
     private static final String CODECS = "G711,G729";
     private static final String USER_NAME = "user";
     private static final String PASSWORD = "pass";
-    private static final String OVERRIDE_FRAGMENT = "domain=override.com port=9090 codecs=АА12 timeout=10";
+    private static final String OVERRIDE_FRAGMENT = "domain=override.com\nport=9090\ncodecs=АА12\ntimeout=10";
     private static final String PARTIAL_OVERRIDE_FRAGMENT = "port=9090";
 
     @BeforeEach
@@ -79,11 +79,10 @@ class DeskDeviceConfigurationStrategyTest {
 
         String expectedConfig = "username=user\n" +
                 "password=pass\n" +
-                "port=9090\n" +
                 "domain=sip.voxloud.com\n" +
+                "port=9090\n" +
                 "codecs=G711,G729\n";
 
         assertEquals(expectedConfig, result);
     }
-
 }

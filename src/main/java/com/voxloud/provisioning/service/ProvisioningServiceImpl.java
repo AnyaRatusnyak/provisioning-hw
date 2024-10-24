@@ -26,7 +26,6 @@ public class ProvisioningServiceImpl implements ProvisioningService {
         this.deviceRepository = deviceRepository;
     }
 
-
     @Override
     public String getProvisioningFile(String macAddress) {
         Device device = deviceRepository.findByMacAddress(macAddress)
@@ -40,5 +39,4 @@ public class ProvisioningServiceImpl implements ProvisioningService {
 
         return strategy.generateConfiguration(device);
     }
-
 }
