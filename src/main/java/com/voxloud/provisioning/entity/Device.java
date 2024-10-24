@@ -1,17 +1,16 @@
 package com.voxloud.provisioning.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Id;
 
 import lombok.Data;
 
 @Entity
 @Data
 public class Device {
-
     @Id
     @Column(name = "mac_address")
     private String macAddress;
